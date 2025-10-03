@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY5E7YNSZ0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-YY5E7YNSZ0');
+  </script>
+  <!-- Google tag (gtag.js) end-->
+  
+  <title>GetDailyOffer - Offers & Deals</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="assets/persentage.jpg">
+  
+  <!-- Meta Description -->
+  <meta name="description" content="Discover the latest offers, discounts, and deals from nearby shops and online stores. Save on clothes, food, electronics, and services with GetDailyOffer.in." />
+  
+  <!-- Primary Keywords -->
+  <meta name="keywords" content="daily offers, latest deals, online offers, local shop offers, discount deals, today’s best offers, shopping discounts, nearby deals, deals, offers" />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="GetDailyOffer.in - Latest Offers & Deals" />
+  <meta property="og:description" content="Find exclusive discounts and daily offers from local shops and online stores. Save on clothing, food, electronics, and services with GetDailyOffer.in." />
+  <meta property="og:image" content="https://getdailyoffer.in/assets/getdailyoffer.jpg" />
+  <meta property="og:url" content="https://getdailyoffer.in" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="GetDailyOffer.in" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GetDailyOffer.in - Latest Offers & Deals" />
+  <meta name="twitter:description" content="Find exclusive discounts and daily offers from local shops and online stores. Save on clothing, food, electronics, and services with GetDailyOffer.in." />
+  <meta name="twitter:image" content="https://getdailyoffer.in/assets/getdailyoffer.jpg" />
+  
+  <!-- JSON-LD Structured Data for Organization -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "GetDailyOffer.in",
+      "url": "https://getdailyoffer.in",
+      "logo": "https://getdailyoffer.in/assets/getdailyoffer.jpg",
+      "sameAs": [
+        "https://www.facebook.com/GetDailyOffer",
+        "https://www.instagram.com/GetDailyOffer",
+        "https://twitter.com/GetDailyOffer"
+      ],
+      "description": "Discover the latest offers, discounts, and deals from nearby shops and online stores. Save on clothes, food, electronics, and services with GetDailyOffer.in."
+    }
+  </script>
+  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a2d9b6b5f2.js" crossorigin="anonymous"></script>
+  
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="assets/getdailyoffer.jpg" alt="Logo" width="60" height="60">
+      </a>
+    </div>
+    <div>
+      <p style="font-weight:bold;color:orange;font-size:22px;margin:0">G e t D a i l y O f f e r . i n</p>
+      <p style="font-size:14px;color:#333;margin:0">Latest offers from nearby shops & online</p>
+    </div>
+    <!-- Add Offer Button -->
+    <div style="margin-left:auto;">
+      <a href="add-offer.html" class="btn get" >Add Offer</a>
+    </div>
+  </header>
+
+  <!-- Search & Filters -->
+  <main class="container">
+    <div class="top-row">
+      <div class="search">
+        <i class="fas fa-search" style="margin-right:10px;color:var(--muted)"></i>
+        <input id="searchInput" placeholder="Search offers, brands or locations" />
+      </div>
+      <div class="filters">
+        <button class="filter-btn" data-category="all" data-active="true">All</button>
+        <button class="filter-btn" data-category="cloth">Cloth</button>
+        <button class="filter-btn" data-category="food">Food</button>
+        <button class="filter-btn" data-category="electronics">Electronics</button>
+        <button class="filter-btn" data-category="service">Service</button>
+      </div>
+    </div>
+
+    <!-- Offer results -->
+    <div id="results" class="grid"></div>
+    <div id="emptyState" class="empty" style="display:none">No offers found.</div>
+  </main>
+
+  <!-- WhatsApp Floating Button -->
+  <a id="whatsapp-floating-btn" href="https://chat.whatsapp.com/LnE6yIt3dFO8oyKTtvCosb" target="_blank">
+    <img src="assets/whattsap_icon.jpg" alt="WhatsApp">
+  </a>
+
+  <!-- Modal -->
+  <div id="imgModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+  <!-- Map Modal -->
+  <div id="mapModal" class="modal">
+    <span class="close" onclick="closeMap()">&times;</span>
+    <iframe id="mapFrame" class="modal-content" style="width:90%;height:80%;border:0;" allowfullscreen="" loading="lazy"></iframe>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

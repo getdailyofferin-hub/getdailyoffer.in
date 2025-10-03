@@ -1,0 +1,285 @@
+:root {
+    --accent: #ff6a00;
+    --muted: #6b7280;
+    --card-bg: #fff;
+    --page-bg: linear-gradient(180deg, #fbfbfc, #f6f7fb);
+    --radius: 12px;
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Roboto,
+        Arial;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: var(--page-bg);
+    color: #111;
+}
+
+header {
+    background: #fff;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 6px rgba(10, 10, 10, 0.05);
+    flex-wrap: wrap;
+}
+.logo img {
+    border-radius: 10px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 22px auto;
+    padding: 0 18px;
+}
+.top-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(10, 10, 10, 0.04);
+}
+.search input {
+    border: 0;
+    outline: none;
+    font-size: 15px;
+    width: 100%;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.filter-btn {
+    background: transparent;
+    border: 1px solid #eee;
+    padding: 8px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+}
+.filter-btn[data-active="true"] {
+    background: var(--accent);
+    color: #fff;
+    border-color: transparent;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: 0 6px 18px rgba(12, 20, 40, 0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+.body {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+.shop {
+    font-weight: 700;
+}
+.offer-title {
+    font-size: 15px;
+    margin: 0 0 6px;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.price {
+    font-weight: 700;
+    color: var(--accent);
+}
+.tag {
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    color: #374151;
+}
+.cta {
+    margin-top: 12px;
+}
+.btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+}
+.btn.get {
+    background: var(--accent);
+    color: #fff;
+    padding:8px 14px;
+    font-size:14px;
+    text-decoration: none;
+}
+
+.empty {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* WhatsApp floating button */
+#whatsapp-floating-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+#whatsapp-floating-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+}
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+}
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.card .loc-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+.loc-icon:hover {
+  transform: scale(1.1);
+}
+/* Add Offer Page */
+#addOfferForm {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: 0 6px 18px rgba(12, 20, 40, 0.06);
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+#addOfferForm label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+#addOfferForm input,
+#addOfferForm select,
+#addOfferForm textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+#addOfferForm input:focus,
+#addOfferForm select:focus,
+#addOfferForm textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 6px rgba(255, 106, 0, 0.3);
+}
+
+#addOfferForm button {
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    border-radius: var(--radius);
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#addOfferForm button:hover {
+    background: #e55a00;
+}
+
+#msg {
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--accent);
+}
+
+header .btn.get {
+    white-space: nowrap;
+    display: inline-block;
+    padding: 10px 16px;
+    font-size: 15px;
+    border-radius: 6px;
+}

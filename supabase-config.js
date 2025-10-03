@@ -1,0 +1,4 @@
+const SUPABASE_URL = 'https://aflexcdtudiccwwcissy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmbGV4Y2R0dWRpY2N3d2Npc3N5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxOTcyODYsImV4cCI6MjA3NDc3MzI4Nn0.Dsxdzmzjh1m1RUwBWZhobliGcC_KDNsubJvuAf6qjX4';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

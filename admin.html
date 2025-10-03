@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Panel - GetDailyOffer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .admin-header {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .offer-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .offer-card img {
+      max-width: 300px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .offer-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+    .info-item {
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    .info-item label {
+      font-weight: 600;
+      color: #666;
+      font-size: 12px;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .map-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .btn-approve {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-reject {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-logout {
+      background: #6b7280;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .btn-approve:hover { background: #059669; }
+    .btn-reject:hover { background: #dc2626; }
+    .btn-logout:hover { background: #4b5563; }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+    
+    /* Login Form Styles */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+      padding: 20px;
+    }
+    .login-box {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    .login-box h2 {
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .form-group input {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .btn-login {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .btn-login:hover {
+      background: #e55a00;
+    }
+    .error-msg {
+      color: #ef4444;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    #adminPanel {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="assets/getdailyoffer.jpg" alt="Logo" width="60" height="60">
+      </a>
+    </div>
+    <div>
+      <p style="font-weight:bold;color:orange;font-size:22px;margin:0">Admin Panel</p>
+      <p style="font-size:14px;color:#333;margin:0">Review pending offers</p>
+    </div>
+    <div style="margin-left:auto; display:none;" id="logoutBtnContainer">
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Login Form -->
+  <div id="loginContainer" class="login-container">
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <form class="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="username">Username or Email</label>
+          <input type="text" id="username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-login">Login</button>
+        <div id="loginError" class="error-msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel">
+    <div class="admin-container">
+      <div class="admin-header">
+        <h2 style="margin:0 0 10px 0">Pending Offers</h2>
+        <p style="margin:0;color:#666">Review and approve offers to publish them on the main page</p>
+      </div>
+
+      <div id="pendingOffers"></div>
+      <div id="emptyState" class="empty-state" style="display:none">
+        <h3>No pending offers</h3>
+        <p>All offers have been reviewed!</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="supabase-config.js"></script>
+  <script>
+  
+const ADMIN_CREDENTIALS = {
+      usernames: ['getdailyoffer.in@gmail.com', 'getdailyoffer.in'],
+      password: 'SSss12@$'
+    };
+    
+    // Check if already logged in
+    function checkAuth() {
+      const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+      if (isLoggedIn === 'true') {
+        showAdminPanel();
+      }
+    }
+    
+    // Handle login
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('loginError');
+    
+      // Validate credentials
+      if (ADMIN_CREDENTIALS.usernames.includes(username) && password === ADMIN_CREDENTIALS.password) {
+        sessionStorage.setItem('adminLoggedIn', 'true');
+        errorEl.textContent = '';
+        showAdminPanel();
+      } else {
+        errorEl.textContent = 'Invalid username or password';
+        document.getElementById('password').value = '';
+      }
+    }
+    
+    // Handle logout
+    function handleLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.removeItem('adminLoggedIn');
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('logoutBtnContainer').style.display = 'none';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+      }
+    }
+    
+    // Show admin panel
+    function showAdminPanel() {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      document.getElementById('logoutBtnContainer').style.display = 'block';
+      loadPendingOffers();
+    }
+    
+    const pendingOffersEl = document.getElementById('pendingOffers');
+    const emptyStateEl = document.getElementById('emptyState');
+    
+    // Load pending offers
+    async function loadPendingOffers() {
+      try {
+        const { data, error } = await supabase
+          .from('temp')
+          .select('*')
+          .order('id', { ascending: false });
+    
+        if (error) throw error;
+    
+        console.log('Loaded offers:', data); // Debug log
+    
+        if (!data || data.length === 0) {
+          pendingOffersEl.innerHTML = '';
+          emptyStateEl.style.display = 'block';
+          return;
+        }
+    
+        emptyStateEl.style.display = 'none';
+        renderOffers(data);
+      } catch (error) {
+        console.error('Error loading offers:', error);
+        pendingOffersEl.innerHTML = `<p style="color:red">Error loading offers: ${error.message}</p>`;
+      }
+    }
+    
+    // Render offers
+    function renderOffers(offers) {
+      pendingOffersEl.innerHTML = offers.map(offer => `
+        <div class="offer-card" data-id="${offer.id}">
+          <h3>${offer.offer_title}</h3>
+          <img src="${offer.image_link}" alt="${offer.offer_title}" onerror="this.style.border='2px solid red'; this.alt='Image failed to load: ${offer.image_link}';">
+          
+          <div class="offer-info">
+            <div class="info-item">
+              <label>Shop Name</label>
+              <div>${offer.shop_name}</div>
+            </div>
+            <div class="info-item">
+              <label>Category</label>
+              <div>${offer.category}</div>
+            </div>
+            <div class="info-item">
+              <label>Price</label>
+              <div>${offer.price}</div>
+            </div>
+            <div class="info-item">
+              <label>Expiry Date</label>
+              <div>${offer.expiry_date}</div>
+            </div>
+          </div>
+    
+          <div class="info-item">
+            <label>Description</label>
+            <div>${offer.description}</div>
+          </div>
+    
+          <div style="margin-top:15px">
+            <label for="map-${offer.id}" style="font-weight:600;display:block;margin-bottom:5px">
+              Google Maps Embed Link (Required for approval)
+            </label>
+            <input 
+              type="text" 
+              id="map-${offer.id}" 
+              class="map-input" 
+              placeholder="Paste Google Maps embed URL here..."
+              value=""
+            >
+            <small style="color:#666">Get embed link: Google Maps → Share → Embed a map → Copy HTML</small>
+          </div>
+    
+          <div class="action-buttons">
+            <button class="btn-approve" onclick="approveOffer(${offer.id})">
+              ✓ Approve & Publish
+            </button>
+            <button class="btn-reject" onclick="rejectOffer(${offer.id})">
+              ✗ Reject
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // Approve offer - FIXED VERSION
+    async function approveOffer(offerId) {
+      const mapInput = document.getElementById(`map-${offerId}`);
+      const mapLink = mapInput.value.trim();
+    
+      if (!mapLink) {
+        alert('Please provide Google Maps embed link before approving!');
+        mapInput.focus();
+        return;
+      }
+    
+      if (!confirm('Approve this offer and publish it?')) return;
+    
+      const approveBtn = event.target;
+      approveBtn.disabled = true;
+      approveBtn.textContent = 'Processing...';
+    
+      try {
+        console.log('Step 1: Fetching temp offer data...');
+        // Get the offer data from temp
+        const { data: tempData, error: fetchError } = await supabase
+          .from('temp')
+          .select('*')
+          .eq('id', offerId)
+          .single();
+    
+        if (fetchError) {
+          console.error('Fetch error:', fetchError);
+          throw fetchError;
+        }
+        console.log('Temp data:', tempData);
+    
+        // Extract filename from URL
+        console.log('Step 2: Extracting filename from:', tempData.image_link);
+        const urlParts = tempData.image_link.split('/');
+        const tempFileName = urlParts[urlParts.length - 1];
+        console.log('Filename:', tempFileName);
+    
+        // Download from temp_images
+        console.log('Step 3: Downloading from temp_images...');
+        const { data: fileData, error: downloadError } = await supabase.storage
+          .from('temp_images')
+          .download(tempFileName);
+    
+        if (downloadError) {
+          console.error('Download error:', downloadError);
+          throw downloadError;
+        }
+        console.log('Downloaded file:', fileData);
+    
+        // Upload to offer_images with new filename
+        console.log('Step 4: Uploading to offer_images...');
+        const newFileName = `offer_${Date.now()}_${tempFileName.split('_').slice(1).join('_')}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('offer_images')
+          .upload(newFileName, fileData, {
+            contentType: fileData.type,
+            upsert: false
+          });
+    
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          throw uploadError;
+        }
+        console.log('Upload data:', uploadData);
+    
+        // Get new public URL
+        console.log('Step 5: Getting public URL...');
+        const { data: newUrlData } = supabase.storage
+          .from('offer_images')
+          .getPublicUrl(newFileName);
+        
+        console.log('New URL:', newUrlData.publicUrl);
+    
+        // Insert into offers table
+        console.log('Step 6: Inserting into offers table...');
+        const { data: insertData, error: insertError } = await supabase
+          .from('offers')
+          .insert([{
+            shop_name: tempData.shop_name,
+            offer_title: tempData.offer_title,
+            category: tempData.category,
+            price: tempData.price,
+            description: tempData.description,
+            image_link: newUrlData.publicUrl,
+            map_link: mapLink,
+            expiry_date: tempData.expiry_date
+          }])
+          .select();
+    
+        if (insertError) {
+          console.error('Insert error:', insertError);
+          throw insertError;
+        }
+        console.log('Insert result:', insertData);
+    
+        // Delete from temp_images
+        console.log('Step 7: Deleting from temp_images...');
+        const { error: deleteStorageError } = await supabase.storage
+          .from('temp_images')
+          .remove([tempFileName]);
+    
+        if (deleteStorageError) {
+          console.warn('Warning: Could not delete temp image:', deleteStorageError);
+          // Don't throw, continue with cleanup
+        }
+    
+        // Delete from temp table
+        console.log('Step 8: Deleting from temp table...');
+        const { error: deleteError } = await supabase
+          .from('temp')
+          .delete()
+          .eq('id', offerId);
+    
+        if (deleteError) {
+          console.error('Delete error:', deleteError);
+          throw deleteError;
+        }
+    
+        console.log('✓ All steps completed successfully!');
+        alert('✓ Offer approved and published!');
+        loadPendingOffers();
+    
+      } catch (error) {
+        console.error('Error approving offer:', error);
+        alert(`Error: ${error.message}\n\nCheck console for details.`);
+        approveBtn.disabled = false;
+        approveBtn.textContent = '✓ Approve & Publish';
+      }
+    }
+    
+    // Reject offer
+    async function rejectOffer(offerId) {
+      if (!confirm('Reject this offer? This will permanently delete it.')) return;
+    
+      const rejectBtn = event.target;
+      rejectBtn.disabled = true;
+      rejectBtn.textContent = 'Deleting...';
+    
+      try {
+        console.log('Rejecting offer:', offerId);
+        
+        // Get the offer to get image URL
+        const { data: tempData, error: fetchError } = await supabase
+          .from('temp')
+          .select('image_link')
+          .eq('id', offerId)
+          .single();
+    
+        if (fetchError) throw fetchError;
+    
+        // Extract filename from URL
+        const urlParts = tempData.image_link.split('/');
+        const fileName = urlParts[urlParts.length - 1];
+        console.log('Deleting file:', fileName);
+    
+        // Delete image from temp_images
+        const { error: deleteStorageError } = await supabase.storage
+          .from('temp_images')
+          .remove([fileName]);
+    
+        if (deleteStorageError) {
+          console.warn('Could not delete image:', deleteStorageError);
+          // Continue anyway
+        }
+    
+        // Delete from temp table
+        const { error: deleteError } = await supabase
+          .from('temp')
+          .delete()
+          .eq('id', offerId);
+    
+        if (deleteError) throw deleteError;
+    
+        console.log('✓ Offer rejected successfully');
+        alert('Offer rejected and deleted.');
+        loadPendingOffers();
+    
+      } catch (error) {
+        console.error('Error rejecting offer:', error);
+        alert(`Error: ${error.message}`);
+        rejectBtn.disabled = false;
+        rejectBtn.textContent = '✗ Reject';
+      }
+    }
+    
+    // Make functions global
+    window.approveOffer = approveOffer;
+    window.rejectOffer = rejectOffer;
+    window.handleLogin = handleLogin;
+    window.handleLogout = handleLogout;
+    
+    // Check auth on page load
+    checkAuth();
+  </script>
+</body>
+</html>
