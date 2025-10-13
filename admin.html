@@ -328,13 +328,18 @@ const ADMIN_CREDENTIALS = {
               <label>Expiry Date</label>
               <div>${offer.expiry_date}</div>
             </div>
-          </div>
     
-          <div class="info-item">
-            <label>Description</label>
-            <div>${offer.description}</div>
-          </div>
+            <div class="info-item">
+              <label>Description</label>
+              <div>${offer.description}</div>
+            </div>
+      
+            <div class="info-item">
+              <label>Location</label>
+              <div>${offer.location}</div>
+            </div>
     
+          </div>
           <div style="margin-top:15px">
             <label for="map-${offer.id}" style="font-weight:600;display:block;margin-bottom:5px">
               Google Maps Embed Link (Required for approval)

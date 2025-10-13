@@ -60,6 +60,9 @@
   
       <label>Expiry Date</label>
       <input type="date" id="expiryDate" required>
+      
+      <label>Location</label>
+      <input type="text" id="location" required>
   
       <button type="submit" class="btn get" style="margin-top:12px;">Submit Offer for Review</button>
     </form>
@@ -71,78 +74,79 @@
   
   <script src="supabase-config.js"></script>
   <script>
-const form = document.getElementById('addOfferForm');
-const msg = document.getElementById('msg');
-const imgFile = document.getElementById('imgFile');
-const imgPreview = document.getElementById('imgPreview');
-const loading = document.getElementById('loading');
-
-// Preview image
-imgFile.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-        imgPreview.src = reader.result;
-        imgPreview.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-});
-
-// Submit form
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const file = imgFile.files[0];
-    if (!file) {
-        msg.innerHTML = '<span style="color:red">Please select an image.</span>';
-        return;
-    }
-    
-    // Show loading
-    loading.style.display = 'block';
-    msg.innerHTML = '';
-    
-    try {
-        // Upload image to temp_images bucket
-        const fileName = `${Date.now()}_${file.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('temp_images')
-            .upload(fileName, file);
-        
-        if (uploadError) throw uploadError;
-        
-        // Get public URL
-        const { data: urlData } = supabase.storage
-            .from('temp_images')
-            .getPublicUrl(fileName);
-        
-        // Insert into temp table
-        const { data, error } = await supabase
-            .from('temp')
-            .insert([{
-                shop_name: document.getElementById('shop').value,
-                offer_title: document.getElementById('title').value,
-                category: document.getElementById('category').value,
-                price: document.getElementById('price').value,
-                description: document.getElementById('description').value,
-                image_link: urlData.publicUrl,
-                expiry_date: document.getElementById('expiryDate').value
-            }]);
-        
-        if (error) throw error;
-        
-        msg.innerHTML = '<span style="color:green">✓ Offer submitted successfully! It will be reviewed by admin.</span>';
-        form.reset();
-        imgPreview.style.display = 'none';
-        
-    } catch (error) {
-        console.error('Error:', error);
-        msg.innerHTML = `<span style="color:red">Error: ${error.message}</span>`;
-    } finally {
-        loading.style.display = 'none';
-    }
-});
-</script>
+  const form = document.getElementById('addOfferForm');
+  const msg = document.getElementById('msg');
+  const imgFile = document.getElementById('imgFile');
+  const imgPreview = document.getElementById('imgPreview');
+  const loading = document.getElementById('loading');
+  
+  // Preview image
+  imgFile.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+          imgPreview.src = reader.result;
+          imgPreview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+  });
+  
+  // Submit form
+  form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const file = imgFile.files[0];
+      if (!file) {
+          msg.innerHTML = '<span style="color:red">Please select an image.</span>';
+          return;
+      }
+      
+      // Show loading
+      loading.style.display = 'block';
+      msg.innerHTML = '';
+      
+      try {
+          // Upload image to temp_images bucket
+          const fileName = `${Date.now()}_${file.name}`;
+          const { data: uploadData, error: uploadError } = await supabase.storage
+              .from('temp_images')
+              .upload(fileName, file);
+          
+          if (uploadError) throw uploadError;
+          
+          // Get public URL
+          const { data: urlData } = supabase.storage
+              .from('temp_images')
+              .getPublicUrl(fileName);
+          
+          // Insert into temp table
+          const { data, error } = await supabase
+              .from('temp')
+              .insert([{
+                  shop_name: document.getElementById('shop').value,
+                  offer_title: document.getElementById('title').value,
+                  category: document.getElementById('category').value,
+                  price: document.getElementById('price').value,
+                  description: document.getElementById('description').value,
+                  image_link: urlData.publicUrl,
+                  expiry_date: document.getElementById('expiryDate').value,
+                  location: document.getElementById('location').value
+              }]);
+          
+          if (error) throw error;
+          
+          msg.innerHTML = '<span style="color:green">✓ Offer submitted successfully! It will be reviewed by admin.</span>';
+          form.reset();
+          imgPreview.style.display = 'none';
+          
+      } catch (error) {
+          console.error('Error:', error);
+          msg.innerHTML = `<span style="color:red">Error: ${error.message}</span>`;
+      } finally {
+          loading.style.display = 'none';
+      }
+  });
+  </script>
 </body>
 </html>
