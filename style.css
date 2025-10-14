@@ -113,10 +113,12 @@ header {
 }
 .shop {
     font-weight: 700;
+    font-size: 20px;
 }
 .offer-title {
-    font-size: 15px;
+    font-size: 13px;
     margin: 0 0 6px;
+    font-family: Monospace;
 }
 .row {
     display: flex;
@@ -163,7 +165,7 @@ header {
     position: fixed;
     right: 20px;
     bottom: 20px;
-    z-index: 9999;
+    z-index: 100;
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -178,22 +180,35 @@ header {
 
 /* Modal */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 10000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* enable scroll inside modal */
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
 }
+
 .modal-content {
-    margin: auto;
-    display: block;
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 8px;
+  margin: 40px auto 10px;
+  display: block;
+  max-width: 80%;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
+
+.description {
+  color: #fff;
+  font-size: 16px;
+  margin: 10px auto 40px;
+  max-width: 80%;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
 .close {
     position: absolute;
     top: 20px;

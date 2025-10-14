@@ -57,7 +57,7 @@ function render(list) {
             <img src="assets/icons8-google-maps.svg" class="loc-icon" onclick="showMap('${o.map_link}')" alt="Map">
           </div>
           <div class="cta">
-            <button class="btn get" onclick="claim('${o.image_link}')">Get details</button>
+            <button class="btn get" onclick="claim('${o.image_link}', '${encodeURIComponent(o.description)}')">Get details</button>
           </div>
         </div>
       </article>`;
@@ -90,9 +90,10 @@ function applyFilters(category, q) {
 }
 
 // Modal logic
-function claim(imgUrl) {
+function claim(imgUrl, description) {
   document.getElementById("imgModal").style.display = "block";
   document.getElementById("modalImage").src = imgUrl;
+  document.getElementById("modalDescription").innerText = decodeURIComponent(description) || "No description available.";
 }
 
 function closeModal() {
