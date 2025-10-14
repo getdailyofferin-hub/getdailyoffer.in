@@ -10,22 +10,44 @@ const urlsToCache = [
 // Install and cache essential assets
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
+    })
   );
 });
 
-// Fetch from cache or network
+// Fetch event - differentiate between static and dynamic assets
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
-  );
+  // Handle fetch for script.js with a network-first strategy
+  if (event.request.url.includes('script.js')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Optional: Cache the new version of the script after fetching it
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
+          return response;
+        })
+        .catch(() => caches.match(event.request)) // Fallback to cache if network fails
+    );
+  } else {
+    // For other assets (like HTML, CSS, images), use cache-first strategy
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
 
-// Remove old caches
+// Remove old caches during activation
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)  // Delete old caches
+          .map(key => caches.delete(key))
+      )
     )
   );
 });
