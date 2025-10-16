@@ -33,7 +33,6 @@ function closeMap() {
   document.getElementById("mapModal").style.display = "none";
   document.getElementById("mapFrame").src = "";
 }
-
 function render(list) {
   resultsEl.innerHTML = '';
   if (!list.length) {
@@ -62,7 +61,11 @@ function render(list) {
         </div>
       </article>`;
   });
+
+  // ✅ Add this line at the end:
+  attachCardAnimations();
 }
+
 
 // Filters
 document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -102,3 +105,20 @@ function closeModal() {
 
 // Load offers on page load
 loadOffers();
+
+// ---- Intersection Observer Setup ----
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationDelay = `${index * 0.1}s`; // staggered
+      entry.target.classList.add('animate');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 }); // Trigger when 20% visible
+
+// ---- Attach observer after rendering ----
+function attachCardAnimations() {
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => observer.observe(card));
+}
