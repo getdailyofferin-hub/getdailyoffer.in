@@ -230,7 +230,7 @@ const ADMIN_CREDENTIALS = {
     
     // Check if already logged in
     function checkAuth() {
-      const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+      const isLoggedIn = localStorage.getItem('adminLoggedIn');
       if (isLoggedIn === 'true') {
         showAdminPanel();
       }
@@ -246,7 +246,7 @@ const ADMIN_CREDENTIALS = {
     
       // Validate credentials
       if (ADMIN_CREDENTIALS.usernames.includes(username) && password === ADMIN_CREDENTIALS.password) {
-        sessionStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminLoggedIn', 'true');
         errorEl.textContent = '';
         showAdminPanel();
       } else {
@@ -258,7 +258,7 @@ const ADMIN_CREDENTIALS = {
     // Handle logout
     function handleLogout() {
       if (confirm('Are you sure you want to logout?')) {
-        sessionStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminLoggedIn');
         document.getElementById('loginContainer').style.display = 'flex';
         document.getElementById('adminPanel').style.display = 'none';
         document.getElementById('logoutBtnContainer').style.display = 'none';
